@@ -71,12 +71,12 @@ for train_index, test_index in tenfold.split(data):
   train_x = train_x.reshape(train_x.shape[0], 1, train_x.shape[1])
   
   model = Sequential()
-  model.add(LSTM(64, batch_input_shape=(1, 1, train_x.shape[2]), return_sequences=False, stateful=True))
+  model.add(LSTM(200, batch_input_shape=(1, 1, train_x.shape[2]), return_sequences=False, stateful=True))
   model.add(Dense(1, activation='tanh'))
-  model.compile(loss='mean_squared_error', optimizer='adam')
+  model.compile(loss='categorical_crossentropy', optimizer='adam')
   print(model.summary())
   
-  model.fit(train_x, train_y, epochs=1, batch_size=1, verbose=0, shuffle=False)
+  model.fit(train_x, train_y, epochs=50, batch_size=1, verbose=0, shuffle=False)
   
   test_x = test_scaled[:, 0:-1]
   test_y = test_scaled[:, -1]
@@ -87,9 +87,9 @@ for train_index, test_index in tenfold.split(data):
     pred = model.predict(test.reshape(1, 1, test.shape[1]), batch_size=1)
     print(test.reshape(1, 1, test.shape[1]))
     print(pred)
-    #long_test = numpy.concatenate((test[0], pred[0]))
-    #inverted = scaler.inverse_transform(long_test.reshape(1, -1))
-    #print(inverted)
+    long_test = numpy.concatenate((test[0], pred[0]))
+    inverted = scaler.inverse_transform(long_test.reshape(1, -1))
+    print(inverted)
                         
   #print(predictions)
   #print(len(predictions))
